@@ -17,6 +17,15 @@ public class MyLine implements Serializable {
 	final int barb = 10;
 	final int r = 15;
 	final double phi = Math.PI / 6;
+	
+	public MyLine(Line2D.Double l, int indexPointA, int indexPointB) { // line no cost
+		this.cost = -1;
+		this.indexPointA = indexPointA;
+		this.indexPointB = indexPointB;
+		this.l = l;
+
+	}
+	
 
 	public MyLine(Line2D.Double l, int indexPointA, int indexPointB, int cost) {
 		this.cost = cost;
@@ -36,7 +45,7 @@ public class MyLine implements Serializable {
 		g.draw(new Line2D.Double(x0, y0, x, y));
 	}
 
-	public void drawLine(Graphics2D g, Point p1, Point p2, Color colorCost,	Color colorLine, int size, boolean type) {
+	public void drawLine(Graphics2D g, Point p1, Point p2, Color colorCost,	Color colorLine, int size, boolean type, boolean TypeMap) {
 		String c = "";
 		if (cost < 0) {
 			c = "";
@@ -46,16 +55,16 @@ public class MyLine implements Serializable {
 		g.setStroke(new BasicStroke(size));
 		double theta = Math.atan2(p2.y - p1.y, p2.x - p1.x);
 		g.draw(l);
-		if (type && cost >= 0) {
+		if (type) {
 			double x = p2.x - r * Math.cos(theta);
 			double y = p2.y - r * Math.sin(theta);
 			drawArrow(g, theta, x, y, colorLine, size);
 		}
-
+        if(!TypeMap) { //co chi so
 		g.setColor(colorCost);
-		g.drawString(c, (int) (Math.abs(p1.x + p2.x) / 2),
-				(int) (p1.y + p2.y) / 2);
+		g.drawString(c, (int) (Math.abs(p1.x + p2.x) / 2),(int) (p1.y + p2.y) / 2);
 	}
+        }
 
 	public boolean containerPoint(Point p) {
 		Polygon poly = createPolygon(l);

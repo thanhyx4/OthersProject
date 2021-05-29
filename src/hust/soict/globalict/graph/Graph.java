@@ -1,5 +1,7 @@
 package hust.soict.globalict.graph;
 
+import static java.awt.Event.CTRL_MASK;
+
 import java.awt.BorderLayout ;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -46,10 +48,12 @@ import hust.soict.globalict.graph.RightClick;
 
 public class Graph extends JFrame implements ActionListener {
 		//declare frame
-	
+	private JFrame frameAbout;
 	private String data[][], head[];
+	private String[] listDirected = {"Khong chi so" , "Co chi so"} ;
 	private JComboBox<String> cbbBeginPoint = new JComboBox<String>();
 	private JComboBox<String> cbbEndPoint = new JComboBox<String>();
+	private JComboBox<String> cbbMapType = new JComboBox<String>() ;
 	
 	private JRadioButton radUndirected, radDirected, radBFS, radDFS, radDijkstra ;
 	private JButton btnRunAll, btnRunStep;
@@ -76,6 +80,7 @@ public class Graph extends JFrame implements ActionListener {
 	private int indexBeginPoint = 0, indexEndPoint = 0;
 	private int step = 0;
 	private boolean mapType = false;
+	private boolean MapType = false; // co chi so
 
 
 	private int HEIGHT_SELECT;
@@ -220,7 +225,14 @@ public class Graph extends JFrame implements ActionListener {
 		JPanel panelMapTypeTemp = new JPanel(new GridLayout(1, 2, 5, 5));
 		panelMapTypeTemp.setBorder(new EmptyBorder(0, 10, 0, 5));
 		panelMapTypeTemp.add(radUndirected = createRadioButton("Undirected",true));
-		panelMapTypeTemp.add(radDirected = createRadioButton("Directed", false));
+		
+		JPanel panelMapListDirected = new JPanel(new BorderLayout()); 
+		panelMapListDirected.add(radDirected = createRadioButton("Directed", false), BorderLayout.WEST); 		
+		panelMapListDirected.add(cbbMapType = createComboBox("Co chi so"), BorderLayout.CENTER);
+		cbbMapType.setEnabled(false);
+		cbbMapType.setModel(new DefaultComboBoxModel<String>(listDirected));
+		cbbMapType.setMaximumRowCount(2);
+		panelMapTypeTemp.add(panelMapListDirected);
 		ButtonGroup groupMapType = new ButtonGroup();
 		groupMapType.add(radUndirected);
 		groupMapType.add(radDirected);
@@ -233,14 +245,7 @@ public class Graph extends JFrame implements ActionListener {
 		panelInputMethodTemp.add(radBFS = createRadioButton("BFS", true));
 		panelInputMethodTemp.add(radDFS = createRadioButton("DFS", false));
 		panelInputMethodTemp.add(radDijkstra = createRadioButton("Dijkstra", false));
-		
-		
-	/*	panelDemo.add(cbbGraphDemo = createComboxBox("0"), BorderLayout.CENTER);
-		cbbGraphDemo.setEnabled(false);
-		cbbGraphDemo.setModel(new DefaultComboBoxModel<String>(listGraphDemo));
-		cbbGraphDemo.setMaximumRowCount(3);
-*/	
-		
+		radDijkstra.setEnabled(false);
      	ButtonGroup groupInputMethod = new ButtonGroup();
 		groupInputMethod.add(radBFS);
 		groupInputMethod.add(radDFS); 
@@ -288,6 +293,16 @@ public class Graph extends JFrame implements ActionListener {
 
 
 
+	private JComboBox<String> createComboBox(String title) {
+		String list[] = {title};
+		JComboBox<String> cbb = new JComboBox<String>(list);
+		cbb.addActionListener(this);
+		cbb.setEditable(false);
+		cbb.setMaximumRowCount(2);
+		return cbb;
+	}
+
+
 	private JMenuBar creatMenu() {
 		
 		JMenu menuFile = new JMenu("File");
@@ -303,9 +318,14 @@ public class Graph extends JFrame implements ActionListener {
 		menuEdit.setMnemonic(KeyEvent.VK_E);
 		menuEdit.add(createMenuItem("ScreenShot", KeyEvent.VK_T, Event.CTRL_MASK));
 		
+		JMenu menuAbout = new JMenu("About");
+		menuAbout.setMnemonic(KeyEvent.VK_A);
+		menuAbout.add(createMenuItem("Information", KeyEvent.VK_I, CTRL_MASK));
+		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(menuFile);
 		menuBar.add(menuEdit);
+		menuBar.add(menuAbout);
 		return menuBar;
 	}
 
@@ -472,7 +492,7 @@ public class Graph extends JFrame implements ActionListener {
 		cbbGraphDemo.setEnabled(!check);
 	}
 */
-	private void setEnableMapType(boolean mapType) {
+	private void setEnableMapType(boolean mapType) { // directed or not
 		this.mapType = mapType;
 		myDraw.setTypeMap(mapType);
 		setDrawResultOrStep(false);
@@ -743,14 +763,8 @@ public class Graph extends JFrame implements ActionListener {
 		}
 	}
 */
-/*	private void showHelp() {
-		if (frameHelp == null) {
-			frameHelp = new HelpAndAbout(0, "Dijkstra - Help");
-		}
-		frameHelp.setVisible(true);
-	}
 
-	private void showAbout() {
+/*	private void showAbout() {
 		if (frameAbout == null) {
 			frameAbout = new HelpAndAbout(1, "Dijkstra - About");
 		}
@@ -781,21 +795,15 @@ public class Graph extends JFrame implements ActionListener {
 			actionNew();
 		}
 
-		// select input method
-/*		if (command == "Draw") {
-			setEnableDraw(true, "outputMatrix");
-		} else if (command == "Matrix") {
-			setEnableDraw(true, "inputMatrix");
-		} else if (command == "Demo") {
-			setEnableDraw(false, "outputMatrix");
-			drawDemo();
-		}
-*/
+		
 		// select Map type
 		if (e.getSource() == radUndirected) {
 			setEnableMapType(false);
+			cbbMapType.setEnabled(false);
+			radDijkstra.setEnabled(false);
 		} else if (e.getSource() == radDirected) {
 			setEnableMapType(true);
+			cbbMapType.setEnabled(true);
 		}
 		if(e.getSource() == radBFS) {
 			
@@ -807,10 +815,12 @@ public class Graph extends JFrame implements ActionListener {
 			
 		}
 
-/*		if (e.getSource() == cbbGraphDemo) {
-			drawDemo();
+		if (e.getSource() == cbbMapType) {
+			if(cbbMapType.getSelectedIndex() == 1) {
+				radDijkstra.setEnabled(true);
+			}else radDijkstra.setEnabled(false);
 		}
-*/
+
 		// select point
 		if (e.getSource() == cbbBeginPoint || e.getSource() == cbbEndPoint) {
 			actionChoosePoint();
@@ -842,14 +852,10 @@ public class Graph extends JFrame implements ActionListener {
 		if (command == "Exit") {
 			System.exit(0);
 		}
-/*		if (command == "About") {
-			showAbout();
+		if (command == "Information") {
+			showInformation();
 		}
-		if (command == "Help") {
-			showHelp();
-		}
-*/
-		// select popup menu
+				// select popup menu
 		if (command == "Change cost") {
 			showDialogChangeCost();
 		}
@@ -858,6 +864,32 @@ public class Graph extends JFrame implements ActionListener {
 		}
 		
 	}
+
+
+
+
+
+
+
+
+
+private void showInformation() {
+	// TODO Auto-generated method stub
+	
+}
+
+
+
+
+
+
+
+
+
+private void actionChooseMapDirected() {
+	
+	
+}
 
 
 

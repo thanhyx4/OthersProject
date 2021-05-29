@@ -46,7 +46,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 	private boolean drawStep = false;
 	private boolean reDraw = false;
 	private boolean resetGraph = false;
-	private boolean typeMap = false;
+	private boolean typeMap = false, TypeMap = false; // ko co chi so
 	private boolean checkedPointMin[];
 	private int indexBeginPoint, indexEndPoint;
 	private int drawWith, drawHeight;
@@ -101,7 +101,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 		if (draw == 1) { // draw point
 			Ellipse2D.Float el = new Ellipse2D.Float(x - r, y - r, r2, r2);
 			MyPoint mp = new MyPoint(el);
-			data.getArrMyPoint().add(mp);
+			data.getArrMyPoint().add(mp); // thao tac click tren panel
 			repaint();
 		}
 		System.out.println("Clicked " + e.getX() + "," + e.getY());
@@ -109,36 +109,36 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			System.out.println("Right Clicked");
 			isRightClick = true;
-			pointRight = e.getPoint();
+			pointRight = e.getPoint(); // thao tac right click
 		}
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) { // nhan vao
-		pointBeginLine = e.getPoint();
+	public void mousePressed(MouseEvent e) { // nhan vao vi tri e neu la point thi luu
+		pointBeginLine = e.getPoint();       // de ve line
 		point = e.getPoint();
-		e.getPoint();
-		e.getPoint();
-		data.getArrMyPoint().get(indexTemp).getEl().x = e.getX() - r;
-		data.getArrMyPoint().get(indexTemp).getEl().y = e.getY() - r;
+		//e.getPoint();
+		
+		data.getArrMyPoint().get(indexTemp).getEl().x = e.getX() - r;//luu gia trix,y khi press
+		data.getArrMyPoint().get(indexTemp).getEl().y = e.getY() - r;//vao x,y cua point tai chi so index
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) { // nha ra
+	public void mouseReleased(MouseEvent e) { // nha ra vi tri e de ve line
 		boolean drawAgaine = false;
-		if (checkDrawLine) {
+		if (checkDrawLine) {// check xem co dang ve line khong
 			indexPointEndLine = indexPointContain(new Point(e.getX(), e.getY()));
-			if (indexPointEndLine > 0) {
+			if (indexPointEndLine > 0) { // ton tai point thi ko can tim gia tri dau
 				isFindPoint = false;
 			}
-
+//duyet qua array line de ve lai
 			for (int i = 1; i < data.getArrMyLine().size(); i++) {
 				MyLine line = data.getArrMyLine().get(i);
 				if (typeMap) { // directed
 					// draw again <=> change cost
 					if (line.getIndexPointA() == indexPointBeginLine
 							&& line.getIndexPointB() == indexPointEndLine) {
-						drawAgaine = true;
+						drawAgaine = true;//ko phai ve lai
 						break;
 					} // draw line reverse <=> not change cost
 					else if (line.getIndexPointA() == indexPointEndLine
@@ -160,8 +160,11 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 				}
 			}
 			if (!drawAgaine) {
-				int cost = showDialogCost(indexPointBeginLine,
-						indexPointEndLine);
+				int cost;
+				if(!TypeMap) {
+				 cost = showDialogCost(indexPointBeginLine,indexPointEndLine);
+				}else cost = -1;
+				
 				addLineToList(indexPointBeginLine, indexPointEndLine, cost);
 			}
 			checkDrawLine = false;
@@ -382,7 +385,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 							data.getArrMyPoint()
 									.get(data.getArrMyLine().get(i)
 											.getIndexPointB()).getP(),
-							colorCost, colorDraw, sizeLine, typeMap);
+							colorCost, colorDraw, sizeLine, typeMap, TypeMap);
 		}
 
 		// draw point
@@ -403,7 +406,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 
 				ml.drawLine(g2d, data.getArrMyPoint().get(p[i]).getP(), data
 						.getArrMyPoint().get(i).getP(), colorCost, colorResult,
-						sizeLineResult, typeMap);
+						sizeLineResult, typeMap, TypeMap);
 
 				data.getArrMyPoint()
 						.get(i)
@@ -433,7 +436,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 
 				ml.drawLine(g2d, data.getArrMyPoint().get(p[i]).getP(), data
 						.getArrMyPoint().get(i).getP(), colorCost, colorResult,
-						sizeLineResult, typeMap);
+						sizeLineResult, typeMap, TypeMap);
 
 				data.getArrMyPoint()
 						.get(i)
@@ -472,7 +475,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 								data.getArrMyPoint()
 										.get(arrPointResultStep.get(i)).getP(),
 								data.getArrMyPoint().get(j).getP(), colorCost,
-								colorStep, sizeLine, typeMap);
+								colorStep, sizeLine, typeMap, TypeMap);
 
 						data.getArrMyPoint()
 								.get(j)
@@ -499,7 +502,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 								.getP(),
 						data.getArrMyPoint().get(arrPointResultStep.get(i))
 								.getP(), colorStepMin, colorStepMin, sizeLine,
-						typeMap);
+						typeMap, TypeMap);
 
 			}
 
@@ -527,7 +530,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 
 				ml.drawLine(g2d, data.getArrMyPoint().get(p[i]).getP(), data
 						.getArrMyPoint().get(i).getP(), colorCost, colorResult,
-						sizeLineResult, typeMap);
+						sizeLineResult, typeMap, TypeMap);
 
 				data.getArrMyPoint()
 						.get(i)
@@ -771,6 +774,11 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 
 	public void setDraw(int draw) {
 		this.draw = draw;
+	}
+
+	public void setTypeMapDirected(boolean MapType) {
+		this.TypeMap = MapType;
+		
 	}
 
 
