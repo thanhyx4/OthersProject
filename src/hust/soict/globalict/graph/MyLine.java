@@ -18,16 +18,8 @@ public class MyLine implements Serializable {
 	final int r = 15;
 	final double phi = Math.PI / 6;
 	
-	public MyLine(Line2D.Double l, int indexPointA, int indexPointB) { // line no cost
-		this.cost = -1;
-		this.indexPointA = indexPointA;
-		this.indexPointB = indexPointB;
-		this.l = l;
-
-	}
 	
-
-	public MyLine(Line2D.Double l, int indexPointA, int indexPointB, int cost) {
+    public MyLine(Line2D.Double l, int indexPointA, int indexPointB, int cost) {
 		this.cost = cost;
 		this.indexPointA = indexPointA;
 		this.indexPointB = indexPointB;
@@ -51,19 +43,21 @@ public class MyLine implements Serializable {
 			c = "";
 		} else
 			c = String.valueOf(cost);
+		
 		g.setColor(colorLine);
 		g.setStroke(new BasicStroke(size));
 		double theta = Math.atan2(p2.y - p1.y, p2.x - p1.x);
 		g.draw(l);
-		if (type) {
+		if (type) {  //fix chua ve da hien ra mui ten
 			double x = p2.x - r * Math.cos(theta);
 			double y = p2.y - r * Math.sin(theta);
 			drawArrow(g, theta, x, y, colorLine, size);
-		}
-        if(!TypeMap) { //co chi so
+		
+        if(TypeMap) { //co chi so
 		g.setColor(colorCost);
 		g.drawString(c, (int) (Math.abs(p1.x + p2.x) / 2),(int) (p1.y + p2.y) / 2);
 	}
+        }
         }
 
 	public boolean containerPoint(Point p) {

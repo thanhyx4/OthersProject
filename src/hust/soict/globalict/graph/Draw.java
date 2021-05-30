@@ -46,7 +46,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 	private boolean drawStep = false;
 	private boolean reDraw = false;
 	private boolean resetGraph = false;
-	private boolean typeMap = false, TypeMap = false; // ko co chi so
+	private boolean typeMap = false, TypeMap = false; //ko co huong, ko co chi so
 	private boolean checkedPointMin[];
 	private int indexBeginPoint, indexEndPoint;
 	private int drawWith, drawHeight;
@@ -126,7 +126,7 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseReleased(MouseEvent e) { // nha ra vi tri e de ve line
 		boolean drawAgaine = false;
-		if (checkDrawLine) {// check xem co dang ve line khong
+		if (checkDrawLine) { // check xem co dang ve line khong
 			indexPointEndLine = indexPointContain(new Point(e.getX(), e.getY()));
 			if (indexPointEndLine > 0) { // ton tai point thi ko can tim gia tri dau
 				isFindPoint = false;
@@ -160,10 +160,14 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 				}
 			}
 			if (!drawAgaine) {
-				int cost;
-				if(!TypeMap) {
+				int cost=0;
+				if(typeMap) {
+					
+				if(TypeMap) { //co chi so
 				 cost = showDialogCost(indexPointBeginLine,indexPointEndLine);
 				}else cost = -1;
+				}
+				else cost = -1;
 				
 				addLineToList(indexPointBeginLine, indexPointEndLine, cost);
 			}
@@ -280,16 +284,16 @@ public class Draw extends JPanel implements MouseListener, MouseMotionListener {
 	}
 
 	// Add line to list line
-	protected void addLineToList(int indexPointBeginLine,
-			int indexPointEndLine, int cost) {
-		if (cost > 0) {
+	protected void addLineToList(int indexPointBeginLine,int indexPointEndLine, int cost) {
+		if(cost >0 || cost == -1) {
 			MyLine ml = new MyLine(creatLine(
 					data.getArrMyPoint().get(indexPointBeginLine).getP(), data
 							.getArrMyPoint().get(indexPointEndLine).getP()),
 					indexPointBeginLine, indexPointEndLine, cost);
 			data.getArrMyLine().add(ml);
-			repaint();
 		}
+			repaint();
+		
 	}
 
 	// change cost

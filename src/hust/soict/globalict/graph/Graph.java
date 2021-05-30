@@ -80,7 +80,7 @@ public class Graph extends JFrame implements ActionListener {
 	private int indexBeginPoint = 0, indexEndPoint = 0;
 	private int step = 0;
 	private boolean mapType = false;
-	private boolean MapType = false; // co chi so
+	private boolean MapType = false; //ko co chi so
 
 
 	private int HEIGHT_SELECT;
@@ -203,14 +203,13 @@ public class Graph extends JFrame implements ActionListener {
 		}
 
 	private JComboBox<String> createComboxBox(String title) {
-		String list[] = { title };
-		JComboBox<String> cbb = new JComboBox<String>(list);
-		cbb.addActionListener(this);
-		cbb.setEditable(false);
-		cbb.setMaximumRowCount(5);
-		return cbb;
-	}
-
+				String list[] = { title };
+		 		JComboBox<String> cbb = new JComboBox<String>(list);
+		 		cbb.addActionListener(this);
+		 		cbb.setEditable(false);
+		 		cbb.setMaximumRowCount(5);
+		 		return cbb;
+		 	}
 	private JTable createTable() {
 		JTable table = new JTable();
 		return table;
@@ -344,14 +343,14 @@ public class Graph extends JFrame implements ActionListener {
 	// creat Right Mouse Click
 	private RightClick createRightClick() {
 		RightClick mouseR = new RightClick();
-		
+		if(mapType && MapType) {
 		mouseR.add(createMenuItem("Change cost", 0, 0));
+		}
 		mouseR.add(createMenuItem("Delete", 0, 0));
 		
 		return mouseR;
 	}
-
-
+	
 //        ACTION 
 
 
@@ -492,8 +491,10 @@ public class Graph extends JFrame implements ActionListener {
 		cbbGraphDemo.setEnabled(!check);
 	}
 */
-	private void setEnableMapType(boolean mapType) { // directed or not
+	private void setEnableMapType(boolean mapType, boolean MapType) { // directed or not
 		this.mapType = mapType;
+		this.MapType = MapType;
+		myDraw.setTypeMapDirected(MapType);
 		myDraw.setTypeMap(mapType);
 		setDrawResultOrStep(false);
 		myDraw.repaint();
@@ -798,11 +799,11 @@ public class Graph extends JFrame implements ActionListener {
 		
 		// select Map type
 		if (e.getSource() == radUndirected) {
-			setEnableMapType(false);
+			setEnableMapType(false,false);
 			cbbMapType.setEnabled(false);
 			radDijkstra.setEnabled(false);
 		} else if (e.getSource() == radDirected) {
-			setEnableMapType(true);
+			setEnableMapType(true,false);
 			cbbMapType.setEnabled(true);
 		}
 		if(e.getSource() == radBFS) {
@@ -817,8 +818,12 @@ public class Graph extends JFrame implements ActionListener {
 
 		if (e.getSource() == cbbMapType) {
 			if(cbbMapType.getSelectedIndex() == 1) {
+				
 				radDijkstra.setEnabled(true);
-			}else radDijkstra.setEnabled(false);
+				setEnableMapType(true,true);
+			}else {radDijkstra.setEnabled(false);
+			setEnableMapType(true,false);
+			}
 		}
 
 		// select point
